@@ -1,0 +1,11 @@
+c:\Users\Pc\Desktop\DocuArchivePro\DocuArchivePro\bin\PublishApp\DocuArchivePro.pdb
+c:\Users\Pc\Desktop\DocuArchivePro\DocuArchivePro\bin\PublishApp\Resources\Languages\Strings.ar.json
+c:\Users\Pc\Desktop\DocuArchivePro\DocuArchivePro\bin\PublishApp\Resources\Languages\Strings.en.json
+c:\Users\Pc\Desktop\DocuArchivePro\DocuArchivePro\bin\PublishApp\Resources\Languages\Strings.es.json
+c:\Users\Pc\Desktop\DocuArchivePro\DocuArchivePro\bin\PublishApp\Resources\Languages\Strings.fr.json
+c:\Users\Pc\Desktop\DocuArchivePro\DocuArchivePro\bin\PublishApp\Resources\Languages\Strings.hi.json
+c:\Users\Pc\Desktop\DocuArchivePro\DocuArchivePro\bin\PublishApp\Resources\Languages\Strings.pt.json
+c:\Users\Pc\Desktop\DocuArchivePro\DocuArchivePro\bin\PublishApp\Resources\Languages\Strings.ru.json
+c:\Users\Pc\Desktop\DocuArchivePro\DocuArchivePro\bin\PublishApp\Resources\Languages\Strings.zh.json
+c:\Users\Pc\Desktop\DocuArchivePro\DocuArchivePro\bin\PublishApp\e_sqlite3.dll
+c:\Users\Pc\Desktop\DocuArchivePro\DocuArchivePro\bin\PublishApp\DocuArchivePro.exe

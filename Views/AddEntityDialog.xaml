@@ -1,0 +1,76 @@
+<Window x:Class="DocuArchivePro.Views.AddEntityDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding DialogTitle}"
+        SizeToContent="Height"
+        MinHeight="430" Width="560" MinWidth="440"
+        WindowStartupLocation="CenterOwner"
+        Icon="{Binding HeaderIconPath}"
+        ResizeMode="CanResizeWithGrip"
+        Background="{DynamicResource AppBackgroundBrush}"
+        FlowDirection="{Binding Loc.CurrentFlowDirection}"
+        FontFamily="{DynamicResource AppFontFamily}">
+
+    <Grid Margin="20">
+        <Border Background="White" CornerRadius="12" Padding="22" Effect="{StaticResource CardShadow}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <Grid Grid.Row="0" Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Background="#EFF6FF" CornerRadius="8" Width="40" Height="40" Margin="0,0,10,0" VerticalAlignment="Center">
+                        <Image Source="{Binding HeaderIconPath}" Width="32" Height="32" RenderOptions.BitmapScalingMode="HighQuality" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding HeaderText}" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource PrimaryBrush}" TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding SubheaderText}" FontSize="11.5" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Body -->
+                <StackPanel Grid.Row="1">
+                    <TextBlock Text="{Binding Loc[AddEntityNameLabel]}" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,6" TextWrapping="Wrap"/>
+                    <TextBox x:Name="TxtEntityName" Style="{StaticResource ModernTextBox}" Height="38" Margin="0,0,0,14"/>
+
+                    <TextBlock Text="{Binding Loc[AddEntityTypeLabel]}" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,6" TextWrapping="Wrap"/>
+                    <ComboBox x:Name="CmbEntityType" Style="{StaticResource ModernComboBox}" SelectedIndex="0" Margin="0,0,0,14">
+                        <ComboBoxItem Tag="Both" Content="{Binding Loc[EntityTypeBoth]}"/>
+                        <ComboBoxItem Tag="Inbound" Content="{Binding Loc[EntityTypeInbound]}"/>
+                        <ComboBoxItem Tag="Outbound" Content="{Binding Loc[EntityTypeOutbound]}"/>
+                    </ComboBox>
+
+                    <TextBlock Text="{Binding Loc[AddEntityNotesLabel]}" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,6" TextWrapping="Wrap"/>
+                    <TextBox x:Name="TxtEntityNotes" Style="{StaticResource ModernTextBox}" Height="64" AcceptsReturn="True" TextWrapping="Wrap"/>
+                </StackPanel>
+
+                <!-- Footer Buttons -->
+                <Grid Grid.Row="2" Margin="0,18,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0" Click="BtnSave_Click" Style="{StaticResource ModernPrimaryButton}" IsDefault="True" MinHeight="40">
+                        <Viewbox StretchDirection="DownOnly">
+                            <TextBlock Text="{Binding SaveButtonText}" VerticalAlignment="Center"/>
+                        </Viewbox>
+                    </Button>
+                    <Button Grid.Column="2" Click="BtnCancel_Click" Style="{StaticResource ModernSecondaryButton}" IsCancel="True" MinHeight="40">
+                        <Viewbox StretchDirection="DownOnly">
+                            <TextBlock Text="{Binding Loc[Cancel]}"/>
+                        </Viewbox>
+                    </Button>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

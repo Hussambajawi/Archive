@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RollForward>LatestMajor</RollForward>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Resources\Icons\AppIcon.ico</ApplicationIcon>
+    <StartupObject>DocuArchivePro.App</StartupObject>
+    <AssemblyTitle>Archive Pro_V1.5 By:HussamBa'jawi</AssemblyTitle>
+    <AssemblyDescription>نظام الأرشفة الإلكترونية الاحترافي الإصدار 1.5 - بواسطة حسام فتحي بعجاوي - 00962777616397</AssemblyDescription>
+    <Company>بواسطة حسام فتحي بعجاوي - 00962777616397</Company>
+    <Product>Archive Pro_V1.5 By:HussamBa'jawi</Product>
+    <Copyright>Copyright © 2026 بواسطة حسام فتحي بعجاوي - 00962777616397</Copyright>
+    <Version>1.5.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Drawing.Common" Version="8.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="gg\**" />
+    <EmbeddedResource Remove="gg\**" />
+    <None Remove="gg\**" />
+    <Page Remove="gg\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Icons\*.png" />
+    <Resource Include="Resources\Icons\*.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Resources\Languages\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="ArabicFonts\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

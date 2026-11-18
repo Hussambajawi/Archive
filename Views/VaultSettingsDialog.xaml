@@ -1,0 +1,193 @@
+<Window x:Class="DocuArchivePro.Views.VaultSettingsDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding Loc[VaultWindowTitle]}"
+        Height="720" Width="980"
+        MinHeight="540" MinWidth="740"
+        WindowStartupLocation="CenterOwner"
+        Icon="pack://application:,,,/Resources/Icons/SecurityLockIcon.png"
+        ResizeMode="CanResizeWithGrip"
+        Background="{DynamicResource AppBackgroundBrush}"
+        FlowDirection="{Binding Loc.CurrentFlowDirection}"
+        FontFamily="{DynamicResource AppFontFamily}">
+
+    <Grid Margin="22">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#0F172A" CornerRadius="12" Padding="20,16" Margin="0,0,0,16" Effect="{StaticResource CardShadow}">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{StaticResource SecurityLockImage}" Width="34" Height="34" Margin="0,0,10,0" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding Loc[VaultHeaderTitle]}"
+                               FontSize="18" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                </StackPanel>
+                <TextBlock Text="{Binding Loc[VaultHeaderDesc]}"
+                           FontSize="13" Foreground="#94A3B8" Margin="0,6,0,0" TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Vault Path Selection & Encryption Controls -->
+        <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="22" Margin="0,0,0,16" Effect="{StaticResource CardShadow}">
+            <StackPanel>
+                <TextBlock Text="{Binding Loc[VaultPathSelectLabel]}"
+                           FontWeight="Bold" FontSize="14.5" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,0,10" TextWrapping="Wrap"/>
+
+                <Grid Margin="0,0,0,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox x:Name="TxtVaultPath" Style="{StaticResource ModernTextBox}" FontSize="13.5" IsReadOnly="False"/>
+                    <Button Grid.Column="2" Style="{StaticResource ModernSecondaryButton}" Click="BtnBrowseFolder_Click">
+                        <Viewbox StretchDirection="DownOnly">
+                            <TextBlock Text="{Binding Loc[VaultBrowseBtn]}"/>
+                        </Viewbox>
+                    </Button>
+                </Grid>
+
+                <CheckBox x:Name="ChkMigrateExisting" Content="{Binding Loc[VaultMigrateCheck]}"
+                          IsChecked="True" FontWeight="SemiBold" Margin="0,0,0,14"/>
+
+                <UniformGrid Rows="1" Columns="3">
+                    <Button Style="{StaticResource ModernPrimaryButton}" Margin="0,0,6,0" MinHeight="42" Click="BtnSaveVaultPath_Click">
+                        <Viewbox StretchDirection="DownOnly">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Image Source="{StaticResource SecurityLockImage}" Width="18" Height="18" Margin="0,0,6,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                <TextBlock Text="{Binding Loc[VaultSaveApplyBtn]}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Viewbox>
+                    </Button>
+                    <Button Style="{StaticResource ModernSecondaryButton}" Margin="3,0" MinHeight="42" Click="BtnEncryptAllNow_Click">
+                        <Viewbox StretchDirection="DownOnly">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Image Source="{StaticResource SecurityLockImage}" Width="18" Height="18" Margin="0,0,6,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                <TextBlock Text="{Binding Loc[VaultEncryptNowBtn]}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Viewbox>
+                    </Button>
+                    <Button Style="{StaticResource ModernSecondaryButton}" Margin="6,0,0,0" MinHeight="42" Click="BtnOpenExplorer_Click">
+                        <Viewbox StretchDirection="DownOnly">
+                            <TextBlock Text="{Binding Loc[VaultOpenExplorerBtn]}"/>
+                        </Viewbox>
+                    </Button>
+                </UniformGrid>
+
+                <Border Background="#F0FDF4" BorderBrush="#BBF7D0" BorderThickness="1" CornerRadius="8" Padding="12,8" Margin="0,14,0,0">
+                    <TextBlock x:Name="TxtVaultStats"
+                               Foreground="#166534" FontWeight="SemiBold" FontSize="13" TextWrapping="Wrap"/>
+                </Border>
+            </StackPanel>
+        </Border>
+
+        <!-- Encrypted Attachments Browser (In-App Preview) -->
+        <Border Grid.Row="2" Background="White" CornerRadius="12" Padding="20" Effect="{StaticResource CardShadow}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Margin="0,0,0,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding Loc[VaultTableTitle]}"
+                               FontSize="15.5" FontWeight="Bold" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                    <Button Grid.Column="2" Style="{StaticResource ModernPrimaryButton}" Click="BtnPreviewSelected_Click">
+                        <Viewbox StretchDirection="DownOnly">
+                            <TextBlock Text="{Binding Loc[VaultPreviewSelectedBtn]}"/>
+                        </Viewbox>
+                    </Button>
+                </Grid>
+
+                <DataGrid x:Name="DgAttachments" Grid.Row="1" Style="{StaticResource ModernDataGrid}" MouseDoubleClick="DgAttachments_MouseDoubleClick">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Width="1.6*">
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding DataContext.Loc[ColOriginalFileName], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding FileName}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Width="0.6*">
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding DataContext.Loc[ColFileExt], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding FileExtension}" VerticalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Width="0.8*">
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding DataContext.Loc[ColFileSize], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding FileSizeFormatted}" VerticalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Width="1.2*">
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding DataContext.Loc[ColUploadedAt], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding UploadedAt, Converter={StaticResource LocValConverter}, ConverterParameter='yyyy-MM-dd HH:mm'}" VerticalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Width="2.2*">
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding DataContext.Loc[ColEncryptedPath], RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding StoragePath}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+
+        <!-- Footer -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
+            <Button MinWidth="130" Style="{StaticResource ModernSecondaryButton}" Click="BtnClose_Click">
+                <Viewbox StretchDirection="DownOnly">
+                    <TextBlock Text="{Binding Loc[CloseBtn]}"/>
+                </Viewbox>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>

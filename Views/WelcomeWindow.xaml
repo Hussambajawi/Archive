@@ -1,0 +1,411 @@
+<Window x:Class="DocuArchivePro.Views.WelcomeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding Loc[AppTitle]}"
+        Height="840" Width="1280"
+        MinHeight="640" MinWidth="880"
+        WindowStartupLocation="CenterScreen"
+        Icon="pack://application:,,,/Resources/Icons/AppIcon.png"
+        ResizeMode="CanResizeWithGrip"
+        Background="#F1F5F9"
+        FlowDirection="{Binding Loc.CurrentFlowDirection}"
+        FontFamily="{DynamicResource AppFontFamily}">
+
+    <Grid Margin="20">
+        <Grid.LayoutTransform>
+            <ScaleTransform ScaleX="{Binding Loc.UiScale}" ScaleY="{Binding Loc.UiScale}"/>
+        </Grid.LayoutTransform>
+        <Grid.RowDefinitions>
+            <!-- Top Hero Header with Date, Day & Time (Hijri & Gregorian) + Language/Zoom Switcher -->
+            <RowDefinition Height="Auto"/>
+            <!-- Scrollable Middle Content: Live Archive Stat Labels + System Tasks Labels -->
+            <RowDefinition Height="*"/>
+            <!-- Bottom Action Buttons Bar -->
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ================= 1. HERO HEADER & LIVE DATE/TIME (HIJRI & GREGORIAN) ================= -->
+        <Border Grid.Row="0" CornerRadius="16" Padding="24,18" Margin="0,0,0,16" Effect="{StaticResource CardShadow}"
+                MouseLeftButtonDown="Header_MouseLeftButtonDown">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#0F172A" Offset="0"/>
+                    <GradientStop Color="#1E3A8A" Offset="0.6"/>
+                    <GradientStop Color="#0F766E" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="12"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Top Quick Language & UI Scale Bar -->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Language Switcher -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Loc[CurrentLanguage]}" Foreground="#CBD5E1" FontSize="12" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <ComboBox ItemsSource="{Binding Loc.SupportedLanguages}"
+                                  SelectedItem="{Binding Loc.CurrentLanguage, Mode=TwoWay}"
+                                  DisplayMemberPath="NativeName"
+                                  Style="{StaticResource ModernComboBox}" Width="190" Height="32" FontSize="12"/>
+                    </StackPanel>
+
+                    <!-- Quick Theme & Zoom Controls -->
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button Content="{Binding Loc.ThemeButtonLabel}" Click="BtnToggleTheme_Click"
+                                Style="{StaticResource ModernSecondaryButton}" Background="{DynamicResource SecondaryButtonBgBrush}" Foreground="{DynamicResource TextPrimaryBrush}" BorderBrush="{DynamicResource PrimaryBrush}"
+                                MinHeight="30" Height="30" Padding="12,3" FontSize="12" FontWeight="Bold" Margin="0,0,14,0"/>
+                        <TextBlock Text="{Binding Loc[UiScaleLabel]}" Foreground="#CBD5E1" FontSize="11.5" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <Button Click="BtnZoomIn_Click" Style="{StaticResource ModernPrimaryButton}" MinHeight="28" Height="28" Padding="8,2" FontSize="11.5" Margin="2,0">
+                            <Viewbox StretchDirection="DownOnly">
+                                <TextBlock Text="{Binding Loc[ZoomIn]}"/>
+                            </Viewbox>
+                        </Button>
+                        <Button Content="{Binding Loc.UiScalePercentText}" Click="BtnZoomReset_Click" Style="{StaticResource ModernSecondaryButton}" MinHeight="28" Height="28" Padding="8,2" FontSize="11.5" Margin="2,0" ToolTip="{Binding Loc[ResetZoomTooltip]}"/>
+                        <Button Click="BtnZoomOut_Click" Style="{StaticResource ModernSecondaryButton}" MinHeight="28" Height="28" Padding="8,2" FontSize="11.5" Margin="2,0">
+                            <Viewbox StretchDirection="DownOnly">
+                                <TextBlock Text="{Binding Loc[ZoomOut]}"/>
+                            </Viewbox>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Branding & Dates Row -->
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Branding & Welcome Title -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Border Width="62" Height="62" Background="#1E293B" CornerRadius="14" Margin="0,0,16,0" BorderBrush="#93C5FD" BorderThickness="1.5">
+                            <Image Source="{StaticResource AppLogoImage}" Width="52" Height="52" RenderOptions.BitmapScalingMode="HighQuality" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Loc[WelcomeHeroTitle]}" FontSize="21" FontWeight="Bold" Foreground="White" TextWrapping="Wrap"/>
+                            <TextBlock Text="{Binding Loc[WelcomeHeroSubtitle]}" FontSize="13" Foreground="#CBD5E1" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Live Day, Time, Hijri & Gregorian Date Badges -->
+                    <WrapPanel Grid.Column="1" VerticalAlignment="Center">
+                        <!-- Day & Live Clock Label -->
+                        <Border Background="#1E293B" BorderBrush="#38BDF8" BorderThickness="1" CornerRadius="12" Padding="16,10" Margin="6,4">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Loc[WelcomeTodayTimeLabel]}" Foreground="#94A3B8" FontSize="11.5" Margin="0,0,0,3"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock x:Name="LblDayName" Foreground="#38BDF8" FontWeight="Bold" FontSize="15" Margin="0,0,8,0"/>
+                                    <TextBlock Text="|" Foreground="#475569" Margin="0,0,8,0"/>
+                                    <TextBlock x:Name="LblLiveTime" Foreground="White" FontWeight="Bold" FontSize="15"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Hijri Date Label -->
+                        <Border Background="#1E293B" BorderBrush="#34D399" BorderThickness="1" CornerRadius="12" Padding="16,10" Margin="6,4">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Loc[WelcomeHijriDateLabel]}" Foreground="#A7F3D0" FontSize="11.5" Margin="0,0,0,3"/>
+                                <TextBlock x:Name="LblHijriDate" Foreground="#34D399" FontWeight="Bold" FontSize="14"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Gregorian Date Label -->
+                        <Border Background="#1E293B" BorderBrush="#FBBF24" BorderThickness="1" CornerRadius="12" Padding="16,10" Margin="6,4">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Loc[WelcomeGregorianDateLabel]}" Foreground="#FDE68A" FontSize="11.5" Margin="0,0,0,3"/>
+                                <TextBlock x:Name="LblGregorianDate" Foreground="#FBBF24" FontWeight="Bold" FontSize="14"/>
+                            </StackPanel>
+                        </Border>
+                    </WrapPanel>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- ================= 2. SCROLLABLE CONTENT: ARCHIVE STATS LABELS & SYSTEM TASKS LABELS ================= -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel>
+                <!-- A. Live Archive Statistical Labels Section -->
+                <Border Background="White" CornerRadius="14" Padding="20,16" Margin="0,0,0,16" Effect="{StaticResource CardShadow}">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                            <TextBlock Text="📊" FontSize="18" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Loc[WelcomeStatsSectionTitle]}" FontSize="16.5" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" TextWrapping="Wrap"/>
+                        </StackPanel>
+
+                        <UniformGrid Columns="3">
+                            <!-- Stat Label 1: Total Archived Documents -->
+                            <Border Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="1" CornerRadius="10" Padding="14,12" Margin="6">
+                                <DockPanel>
+                                    <Border DockPanel.Dock="Left" Width="44" Height="44" Background="#2563EB" CornerRadius="10">
+                                        <TextBlock Text="📁" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel VerticalAlignment="Center" Margin="12,0,0,0">
+                                        <TextBlock Text="{Binding Loc[WelcomeStatTotalDocsTitle]}" Foreground="#1E40AF" FontSize="12.5" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                        <TextBlock x:Name="LblStatTotalDocs" Foreground="#1E3A8A" FontSize="18" FontWeight="Bold" Margin="0,3,0,0" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </DockPanel>
+                            </Border>
+
+                            <!-- Stat Label 2: Encrypted Files Count -->
+                            <Border Background="#ECFDF5" BorderBrush="#A7F3D0" BorderThickness="1" CornerRadius="10" Padding="14,12" Margin="6">
+                                <DockPanel>
+                                    <Border DockPanel.Dock="Left" Width="44" Height="44" Background="#059669" CornerRadius="10">
+                                        <TextBlock Text="🔒" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel VerticalAlignment="Center" Margin="12,0,0,0">
+                                        <TextBlock Text="{Binding Loc[WelcomeStatTotalFilesTitle]}" Foreground="#065F46" FontSize="12.5" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                        <TextBlock x:Name="LblStatTotalFiles" Foreground="#064E3B" FontSize="18" FontWeight="Bold" Margin="0,3,0,0" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </DockPanel>
+                            </Border>
+
+                            <!-- Stat Label 3: Inbound & Outbound Breakdown -->
+                            <Border Background="#F0F9FF" BorderBrush="#BAE6FD" BorderThickness="1" CornerRadius="10" Padding="14,12" Margin="6">
+                                <DockPanel>
+                                    <Border DockPanel.Dock="Left" Width="44" Height="44" Background="#0284C7" CornerRadius="10">
+                                        <TextBlock Text="🔄" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel VerticalAlignment="Center" Margin="12,0,0,0">
+                                        <TextBlock Text="{Binding Loc[WelcomeStatInOutTitle]}" Foreground="#075985" FontSize="12.5" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                        <TextBlock x:Name="LblStatInOut" Foreground="#0C4A6E" FontSize="16.5" FontWeight="Bold" Margin="0,3,0,0" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </DockPanel>
+                            </Border>
+
+                            <!-- Stat Label 4: Urgent & Today's Documents -->
+                            <Border Background="#FEF2F2" BorderBrush="#FECACA" BorderThickness="1" CornerRadius="10" Padding="14,12" Margin="6">
+                                <DockPanel>
+                                    <Border DockPanel.Dock="Left" Width="44" Height="44" Background="#DC2626" CornerRadius="10">
+                                        <TextBlock Text="⚡" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel VerticalAlignment="Center" Margin="12,0,0,0">
+                                        <TextBlock Text="{Binding Loc[WelcomeStatUrgentTodayTitle]}" Foreground="#991B1B" FontSize="12.5" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                        <TextBlock x:Name="LblStatUrgentToday" Foreground="#7F1D1D" FontSize="16.5" FontWeight="Bold" Margin="0,3,0,0" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </DockPanel>
+                            </Border>
+
+                            <!-- Stat Label 5: Storage Size & Categories -->
+                            <Border Background="#FAF5FF" BorderBrush="#E9D5FF" BorderThickness="1" CornerRadius="10" Padding="14,12" Margin="6">
+                                <DockPanel>
+                                    <Border DockPanel.Dock="Left" Width="44" Height="44" Background="#7C3AED" CornerRadius="10">
+                                        <TextBlock Text="💾" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel VerticalAlignment="Center" Margin="12,0,0,0">
+                                        <TextBlock Text="{Binding Loc[WelcomeStatStorageTitle]}" Foreground="#5B21B6" FontSize="12.5" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                        <TextBlock x:Name="LblStatStorage" Foreground="#4C1D95" FontSize="16.5" FontWeight="Bold" Margin="0,3,0,0" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </DockPanel>
+                            </Border>
+
+                            <!-- Stat Label 6: Users & Default Login Info -->
+                            <Border Background="#FFFBEB" BorderBrush="#FDE68A" BorderThickness="1" CornerRadius="10" Padding="14,12" Margin="6">
+                                <DockPanel>
+                                    <Border DockPanel.Dock="Left" Width="44" Height="44" Background="#D97706" CornerRadius="10">
+                                        <TextBlock Text="👥" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel VerticalAlignment="Center" Margin="12,0,0,0">
+                                        <TextBlock Text="{Binding Loc[WelcomeStatUsersTitle]}" Foreground="#92400E" FontSize="12.5" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                        <TextBlock x:Name="LblStatUsers" Foreground="#78350F" FontSize="16" FontWeight="Bold" Margin="0,3,0,0" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </DockPanel>
+                            </Border>
+                        </UniformGrid>
+                    </StackPanel>
+                </Border>
+
+                <!-- B. Eye-Friendly Modern Labels Showcasing System Tasks -->
+                <Border Background="White" CornerRadius="14" Padding="20,16" Effect="{StaticResource CardShadow}">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                            <TextBlock Text="✨" FontSize="18" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Loc[WelcomeTasksSectionTitle]}" FontSize="16.5" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" TextWrapping="Wrap"/>
+                        </StackPanel>
+
+                        <UniformGrid Columns="3">
+                            <!-- Task 1 -->
+                            <Border Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1.5" CornerRadius="12" Padding="16" Margin="6">
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                        <Border Background="#DBEAFE" CornerRadius="8" Padding="8,4" Margin="0,0,10,0">
+                                            <TextBlock Text="{Binding Loc[WelcomeTask1Badge]}" Foreground="#1D4ED8" FontWeight="Bold" FontSize="12"/>
+                                        </Border>
+                                        <TextBlock Text="{Binding Loc[WelcomeTask1Title]}" FontWeight="Bold" FontSize="14.5" Foreground="#0F172A" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Loc[WelcomeTask1Desc]}"
+                                               Foreground="#475569" FontSize="12.5" TextWrapping="Wrap" LineHeight="20"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Task 2 -->
+                            <Border Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1.5" CornerRadius="12" Padding="16" Margin="6">
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                        <Border Background="#D1FAE5" CornerRadius="8" Padding="8,4" Margin="0,0,10,0">
+                                            <TextBlock Text="{Binding Loc[WelcomeTask2Badge]}" Foreground="#047857" FontWeight="Bold" FontSize="12"/>
+                                        </Border>
+                                        <TextBlock Text="{Binding Loc[WelcomeTask2Title]}" FontWeight="Bold" FontSize="14.5" Foreground="#0F172A" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Loc[WelcomeTask2Desc]}"
+                                               Foreground="#475569" FontSize="12.5" TextWrapping="Wrap" LineHeight="20"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Task 3 -->
+                            <Border Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1.5" CornerRadius="12" Padding="16" Margin="6">
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                        <Border Background="#EDE9FE" CornerRadius="8" Padding="8,4" Margin="0,0,10,0">
+                                            <TextBlock Text="{Binding Loc[WelcomeTask3Badge]}" Foreground="#6D28D9" FontWeight="Bold" FontSize="12"/>
+                                        </Border>
+                                        <TextBlock Text="{Binding Loc[WelcomeTask3Title]}" FontWeight="Bold" FontSize="14.5" Foreground="#0F172A" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Loc[WelcomeTask3Desc]}"
+                                               Foreground="#475569" FontSize="12.5" TextWrapping="Wrap" LineHeight="20"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Task 4 -->
+                            <Border Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1.5" CornerRadius="12" Padding="16" Margin="6">
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                        <Border Background="#FCE7F3" CornerRadius="8" Padding="8,4" Margin="0,0,10,0">
+                                            <TextBlock Text="{Binding Loc[WelcomeTask4Badge]}" Foreground="#BE185D" FontWeight="Bold" FontSize="12"/>
+                                        </Border>
+                                        <TextBlock Text="{Binding Loc[WelcomeTask4Title]}" FontWeight="Bold" FontSize="14.5" Foreground="#0F172A" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Loc[WelcomeTask4Desc]}"
+                                               Foreground="#475569" FontSize="12.5" TextWrapping="Wrap" LineHeight="20"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Task 5 -->
+                            <Border Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1.5" CornerRadius="12" Padding="16" Margin="6">
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                        <Border Background="#FEF3C7" CornerRadius="8" Padding="8,4" Margin="0,0,10,0">
+                                            <TextBlock Text="{Binding Loc[WelcomeTask5Badge]}" Foreground="#B45309" FontWeight="Bold" FontSize="12"/>
+                                        </Border>
+                                        <TextBlock Text="{Binding Loc[WelcomeTask5Title]}" FontWeight="Bold" FontSize="14.5" Foreground="#0F172A" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Loc[WelcomeTask5Desc]}"
+                                               Foreground="#475569" FontSize="12.5" TextWrapping="Wrap" LineHeight="20"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Task 6 -->
+                            <Border Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1.5" CornerRadius="12" Padding="16" Margin="6">
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                        <Border Background="#E0F2FE" CornerRadius="8" Padding="8,4" Margin="0,0,10,0">
+                                            <TextBlock Text="{Binding Loc[WelcomeTask6Badge]}" Foreground="#0369A1" FontWeight="Bold" FontSize="12"/>
+                                        </Border>
+                                        <TextBlock Text="{Binding Loc[WelcomeTask6Title]}" FontWeight="Bold" FontSize="14.5" Foreground="#0F172A" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Loc[WelcomeTask6Desc]}"
+                                               Foreground="#475569" FontSize="12.5" TextWrapping="Wrap" LineHeight="20"/>
+                                </StackPanel>
+                            </Border>
+                        </UniformGrid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ================= 3. BOTTOM ACTION BUTTONS BAR ================= -->
+        <Border Grid.Row="2" Background="White" CornerRadius="14" Padding="20,14" Margin="0,16,0,0" Effect="{StaticResource CardShadow}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Image Source="{StaticResource AppLogoImage}" Width="40" Height="40" Margin="0,0,12,0" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center"/>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Loc[AppTitle]}" FontWeight="Bold" FontSize="14.5" Foreground="{DynamicResource PrimaryBrush}"/>
+                        <TextBlock Text="{Binding Loc[WelcomeFooterDefaultUser]}" FontSize="12.5" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <UniformGrid Grid.Column="2" Rows="1" VerticalAlignment="Center">
+                    <!-- 1. Login to System Button -->
+                    <Button Style="{StaticResource ModernPrimaryButton}"
+                            MinHeight="46" FontSize="15" Margin="4" HorizontalAlignment="Stretch"
+                            Click="BtnLoginToSystem_Click">
+                        <Viewbox StretchDirection="DownOnly">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Image Source="{StaticResource SecurityLockImage}" Width="20" Height="20" Margin="0,0,6,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                <TextBlock Text="{Binding Loc[WelcomeEnterSystemBtn]}" FontWeight="Bold" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Viewbox>
+                    </Button>
+
+                    <!-- 2. Users & Passwords Management Button -->
+                    <Button Style="{StaticResource ModernSecondaryButton}"
+                            MinHeight="46" FontSize="13.5" FontWeight="SemiBold" Margin="4" HorizontalAlignment="Stretch"
+                            BorderBrush="{DynamicResource PrimaryBrush}" Foreground="{DynamicResource PrimaryBrush}"
+                            Click="BtnOpenUserManagement_Click">
+                        <Viewbox StretchDirection="DownOnly">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Image Source="{StaticResource SecurityLockImage}" Width="20" Height="20" Margin="0,0,6,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                <TextBlock Text="{Binding Loc[WelcomeManageUsersBtn]}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Viewbox>
+                    </Button>
+
+                    <!-- 3. Hijri / Gregorian Calendar Screen Button -->
+                    <Button Style="{StaticResource ModernSecondaryButton}"
+                            MinHeight="46" FontSize="13.5" Margin="4" HorizontalAlignment="Stretch"
+                            Click="BtnOpenCalendar_Click">
+                        <Viewbox StretchDirection="DownOnly">
+                            <TextBlock Text="{Binding Loc[WelcomeCalendarBtn]}"/>
+                        </Viewbox>
+                    </Button>
+
+                    <!-- 4. About Program (V1.1) Button -->
+                    <Button Style="{StaticResource ModernSecondaryButton}"
+                            MinHeight="46" FontSize="13.5" FontWeight="SemiBold" Margin="4" HorizontalAlignment="Stretch"
+                            BorderBrush="#0EA5E9" Foreground="#0369A1"
+                            Click="BtnOpenAbout_Click">
+                        <Viewbox StretchDirection="DownOnly">
+                            <TextBlock Text="{Binding Loc[AboutNav]}"/>
+                        </Viewbox>
+                    </Button>
+
+                    <!-- 5. Restore Backup Button -->
+                    <Button Style="{StaticResource ModernSecondaryButton}"
+                            MinHeight="46" FontSize="13.5" FontWeight="SemiBold" Margin="4" HorizontalAlignment="Stretch"
+                            BorderBrush="#059669" Foreground="#059669"
+                            Click="BtnRestoreBackup_Click">
+                        <Viewbox StretchDirection="DownOnly">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Image Source="{StaticResource SecurityLockImage}" Width="18" Height="18" Margin="0,0,6,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                <TextBlock Text="استعادة نسخة احتياطية" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Viewbox>
+                    </Button>
+
+                    <!-- 6. Exit System Button -->
+                    <Button Style="{StaticResource ModernSecondaryButton}"
+                            MinHeight="46" FontSize="13.5" FontWeight="Bold" Foreground="#DC2626" BorderBrush="#FCA5A5" Margin="4" HorizontalAlignment="Stretch"
+                            Click="BtnExitSystem_Click">
+                        <Viewbox StretchDirection="DownOnly">
+                            <TextBlock Text="{Binding Loc[WelcomeExitSystemBtn]}"/>
+                        </Viewbox>
+                    </Button>
+                </UniformGrid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

@@ -1,0 +1,88 @@
+<Window x:Class="DocuArchivePro.Views.MergeEntitiesDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding DialogTitle}"
+        SizeToContent="Height"
+        MinHeight="460" Width="580" MinWidth="460"
+        WindowStartupLocation="CenterOwner"
+        Icon="pack://application:,,,/Resources/Icons/AppIcon.png"
+        ResizeMode="CanResizeWithGrip"
+        Background="{DynamicResource AppBackgroundBrush}"
+        FlowDirection="{Binding Loc.CurrentFlowDirection}"
+        FontFamily="{DynamicResource AppFontFamily}">
+
+    <Grid Margin="20">
+        <Border Background="White" CornerRadius="12" Padding="22" Effect="{StaticResource CardShadow}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <Grid Grid.Row="0" Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Background="#FEF3C7" CornerRadius="8" Width="42" Height="42" Margin="0,0,12,0" VerticalAlignment="Center">
+                        <TextBlock Text="🔗" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding HeaderText}" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource PrimaryBrush}" TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding SubheaderText}" FontSize="11.5" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Body -->
+                <StackPanel Grid.Row="1">
+                    <!-- Source Entity (Duplicate to remove) -->
+                    <Border Background="#FEF2F2" BorderBrush="#FECACA" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,14">
+                        <StackPanel>
+                            <TextBlock Text="{Binding SourceLabel}" FontWeight="Bold" Foreground="#991B1B" FontSize="13" Margin="0,0,0,6"/>
+                            <ComboBox x:Name="CmbSourceEntity" Style="{StaticResource ModernComboBox}" DisplayMemberPath="DisplayName" Height="36"
+                                      SelectionChanged="CmbSourceEntity_SelectionChanged"/>
+                            <TextBlock x:Name="TxtSourceInfo" Foreground="#B91C1C" FontSize="11" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Target Entity (Master to retain) -->
+                    <Border Background="#F0FDF4" BorderBrush="#BBF7D0" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,14">
+                        <StackPanel>
+                            <TextBlock Text="{Binding TargetLabel}" FontWeight="Bold" Foreground="#166534" FontSize="13" Margin="0,0,0,6"/>
+                            <ComboBox x:Name="CmbTargetEntity" Style="{StaticResource ModernComboBox}" DisplayMemberPath="DisplayName" Height="36"
+                                      SelectionChanged="CmbTargetEntity_SelectionChanged"/>
+                            <TextBlock x:Name="TxtTargetInfo" Foreground="#15803D" FontSize="11" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Information Alert -->
+                    <Border Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="1" CornerRadius="8" Padding="10" Margin="0,0,0,8">
+                        <TextBlock Text="{Binding NoteText}" Foreground="#1E40AF" FontSize="11.5" TextWrapping="Wrap" LineHeight="16"/>
+                    </Border>
+                </StackPanel>
+
+                <!-- Footer Buttons -->
+                <Grid Grid.Row="2" Margin="0,16,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0" Click="BtnMerge_Click" Style="{StaticResource ModernPrimaryButton}" MinHeight="42">
+                        <Viewbox StretchDirection="DownOnly">
+                            <TextBlock Text="{Binding MergeButtonText}" VerticalAlignment="Center" FontWeight="Bold"/>
+                        </Viewbox>
+                    </Button>
+                    <Button Grid.Column="2" Click="BtnCancel_Click" Style="{StaticResource ModernSecondaryButton}" IsCancel="True" MinHeight="42">
+                        <Viewbox StretchDirection="DownOnly">
+                            <TextBlock Text="{Binding Loc[Cancel]}"/>
+                        </Viewbox>
+                    </Button>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
